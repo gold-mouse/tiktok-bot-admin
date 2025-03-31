@@ -1,0 +1,20 @@
+/* For WebKit-based browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121212;
+  /* Dark background */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  /* Dark gray for thumb */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+  /* Lighter gray on hover */
+}
