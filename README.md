@@ -52,4 +52,3 @@ Create a `.env` file in the root directory and define them:
 ```sh
 REACT_APP_API_URL="http://192.168.133.173:5000/api"
 ```
-

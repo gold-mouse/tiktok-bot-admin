@@ -14,12 +14,13 @@ import {
     TextField,
     Divider,
     Typography,
+    Tooltip
 } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 
 import { toast } from "react-toastify"
 
-import { closeChromeAPI, fetch_usersAPI, botActionAPI, loginAPI, searchAPI } from "./api"
+import { closeChromeAPI, fetch_usersAPI, loginAPI, searchAPI } from "./api"
 import LoadingFallback from "./core/components/loading-component"
 
 interface IRows {
@@ -34,7 +35,7 @@ export default function App() {
     const firstLoad = useRef(true)
 
     const [rows, setRows] = useState<IRows[]>([])
-    const [videoList, setVideosList] = useState<{ link: string; img: string; id: number }[]>([])
+    const [videoList, setVideosList] = useState<{ link: string; img: string; id: number; result: any }[]>([])
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [query, setQuery] = useState<string>("")
@@ -96,21 +97,6 @@ export default function App() {
         setLoading(false)
     }
 
-    const botAction = async (link: string) => {
-        if (username === "" || link === "") {
-            return toast.error("Missing payload!")
-        }
-        try {
-            setLoading(true)
-            let res = await botActionAPI({ link, username })
-            if (res.status === true)
-                toast.success("Success!")
-        } catch (error: any) {
-            toast.error(error?.message ?? "Something went wrong!")
-        }
-        setLoading(false)
-    }
-
     const searchVideos = async () => {
         if (username === "" || query === "") {
             return toast.error("Missing payload!")
@@ -146,6 +132,10 @@ export default function App() {
         setUsername("")
         setPassword("")
         setLoginModal(false)
+    }
+
+    const makeMarkByCond = (cond: boolean) => {
+        return cond ? " ✔️" : " ✖️"
     }
 
     useEffect(() => {
@@ -290,7 +280,7 @@ export default function App() {
                                 (video) => (
                                     <Grid
                                         key={video.id}
-                                        size={{ lg: 1.5, md: 1.5, sm: 4, xs: 6 }}
+                                        size={{ lg: 2, md: 2, sm: 4, xs: 6 }}
                                         sx={{
                                             ":active": {
                                                 opacity: 0.7,
@@ -312,9 +302,16 @@ export default function App() {
                                                 }}
                                                 onLoad={() => handleLoad(video.id)}
                                             />
-                                            <Button fullWidth variant="outlined" color="success" onClick={() => botAction(video.link)}>
-                                                Run Bot
-                                            </Button>
+                                            <Tooltip
+                                                title={
+                                                    video.result?.message ??
+                                                    `Heart: ${makeMarkByCond(video.result?.data?.heart)} Favorite: ${makeMarkByCond(video.result?.data?.favorite)} Comment: ${makeMarkByCond(video.result?.data?.comment)}`
+                                                }
+                                            >
+                                                <Button fullWidth variant="outlined" color="success">
+                                                    Done&nbsp; <Typography mb={0.5}>{video.result?.success ? " ✔️" : " ✖️"}</Typography>
+                                                </Button>
+                                            </Tooltip>
                                         </Stack>
                                         {!loadedTemplates[video.id] && (
                                             <>
