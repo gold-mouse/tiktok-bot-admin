@@ -13,12 +13,13 @@ import {
     useMediaQuery,
     TextField,
     Divider,
+    Typography,
 } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 
 import { toast } from "react-toastify"
 
-import { closeChromeAPI, favoriteAPI, fetch_usersAPI, followAPI, loginAPI, openChromeAPI, searchAPI } from "./api"
+import { closeChromeAPI, fetch_usersAPI, botActionAPI, loginAPI, searchAPI } from "./api"
 import LoadingFallback from "./core/components/loading-component"
 
 interface IRows {
@@ -39,8 +40,8 @@ export default function App() {
     const [query, setQuery] = useState<string>("")
 
     const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [confirmModal, setConfirmModal] = useState(false)
     const [loginModal, setLoginModal] = useState<boolean>(false)
-    const [addUsernameModal, setUsernameModal] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
 
     const [loadedTemplates, setLoadedTemplates] = useState<any>({})
@@ -68,26 +69,8 @@ export default function App() {
             setLoading(false)
             if (res.status) {
                 toast.success("Success!")
-            }
-        } catch (error: any) {
-            toast.error(error?.message ?? "Something went wrong!")
-        }
-    }
-
-    const openChrome = async () => {
-        if (rows.length === 0 && username === "") {
-            return setUsernameModal(true)
-        }
-        else if (username === "") {
-            return toast.error("Missing payload!")
-        }
-        try {
-            setLoading(true)
-            const res = await openChromeAPI(username)
-            setLoading(false)
-            if (res.status) {
                 fetch_usernames()
-                toast.success("Success!")
+                closeLoginModal()
             }
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
@@ -96,7 +79,7 @@ export default function App() {
 
     const closeChrome = async () => {
         if (username === "") {
-            return toast.error("Missing payload!")
+            return toast.info("Select username to close chrome of it")
         }
         try {
             setLoading(true)
@@ -104,19 +87,20 @@ export default function App() {
             setLoading(false)
             if (res.status) {
                 toast.success("Success!")
+                fetch_usernames()
             }
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
         }
     }
 
-    const follow = async (link: string) => {
+    const botAction = async (link: string) => {
         if (username === "" || link === "") {
             return toast.error("Missing payload!")
         }
         try {
             setLoading(true)
-            let res = await followAPI({ link, username })
+            let res = await botActionAPI({ link, username })
             if (res.status === true)
                 toast.success("Success!")
         } catch (error: any) {
@@ -142,22 +126,6 @@ export default function App() {
         setLoading(false)
     }
 
-    const favorite = async (link: string) => {
-        if (username === "" || link === "") {
-            return toast.error("Missing payload!")
-        }
-        try {
-            setLoading(true)
-            let res = await favoriteAPI({ link, username })
-            if (res.status === true)
-                toast.success("Success!")
-            toast.error(res.message ?? "Something went wrong!")
-        } catch (error: any) {
-            toast.error(error?.message ?? "Something went wrong!")
-        }
-        setLoading(false)
-    }
-
     const handleClick = (username: string) => {
         setUsername(username)
         setIsOpen(true)
@@ -173,10 +141,9 @@ export default function App() {
     }
 
     const closeLoginModal = () => {
-        setUsernameModal(false)
-        setLoginModal(false)
         setUsername("")
         setPassword("")
+        setLoginModal(false)
     }
 
     useEffect(() => {
@@ -239,21 +206,27 @@ export default function App() {
                         mb={5}
                     >
                         <Stack flexDirection="row" alignItems="center" gap={2}>
-                            <Button variant="contained" color="success" sx={{ color: "white" }} onClick={openChrome}>Open Chrome</Button>
-                            <Button variant="contained" color="error" sx={{ color: "white" }} onClick={closeChrome}>Close Chrome</Button>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                sx={{ color: "white" }}
+                                onClick={() => {
+                                    if (username === "") {
+                                        return toast.info("Select username to close chrome of it")
+                                    }
+                                    setConfirmModal(true)
+                                }}
+                            >
+                                Close Chrome
+                            </Button>
                         </Stack>
                         <Button
                             variant="contained"
                             color="info"
                             sx={{ color: "#fff" }}
-                            onClick={() => {
-                                if (rows.length === 0) {
-                                    return toast.info("Please open chrome")
-                                }
-                                setLoginModal(true)
-                            }}
+                            onClick={() => setLoginModal(true)}
                         >
-                            Add Your Account
+                            Add Account
                         </Button>
                     </Stack>
                     <Stack alignItems="center">
@@ -263,6 +236,7 @@ export default function App() {
                                 style={{ height: "75vh" }}
                                 rows={rows}
                                 columns={columns}
+                                onRowClick={(params) => setUsername(params.row.username)}
                                 sx={{
                                     "& .MuiDataGrid-cell:focus": {
                                         outline: "none",
@@ -314,7 +288,7 @@ export default function App() {
                                 (video) => (
                                     <Grid
                                         key={video.id}
-                                        size={{ lg: 2, md: 2, sm: 4, xs: 12 }}
+                                        size={{ lg: 1.5, md: 1.5, sm: 4, xs: 6 }}
                                         sx={{
                                             ":active": {
                                                 opacity: 0.7,
@@ -336,14 +310,9 @@ export default function App() {
                                                 }}
                                                 onLoad={() => handleLoad(video.id)}
                                             />
-                                            <Stack flexDirection="row" gap={1}>
-                                                <Button variant="outlined" color="success" onClick={() => follow(video.link)}>
-                                                    follow
-                                                </Button>
-                                                <Button variant="outlined" color="error" onClick={() => favorite(video.link)}>
-                                                    favorite
-                                                </Button>
-                                            </Stack>
+                                            <Button fullWidth variant="outlined" color="success" onClick={() => botAction(video.link)}>
+                                                Run Bot
+                                            </Button>
                                         </Stack>
                                         {!loadedTemplates[video.id] && (
                                             <>
@@ -393,8 +362,18 @@ export default function App() {
                     />
                     <CardContent>
                         <Stack rowGap={5}>
-                            <TextField onChange={(e) => setUsername(e.target.value)} size="small" />
-                            <TextField onChange={(e) => setPassword(e.target.value)} size="small" type="password" />
+                            <TextField
+                                placeholder="Username or email"
+                                onChange={(e) => setUsername(e.target.value)}
+                                size="small"
+                            />
+                            <TextField
+                                placeholder="Password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                size="small"
+                                type="password"
+                                onKeyUp={(e) => e.key === "Enter" && login(username, password)}
+                            />
                             <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
                                 <Button variant="outlined" onClick={closeLoginModal}>Cancel</Button>
                                 <Button variant="contained" color="success" onClick={() => login(username, password)} sx={{ color: "#fff" }}>Login</Button>
@@ -404,8 +383,8 @@ export default function App() {
                 </Card>
             </Modal>
             <Modal
-                open={addUsernameModal}
-                onClose={closeLoginModal}
+                open={confirmModal}
+                onClose={() => setConfirmModal(false)}
                 sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
             >
                 <Card
@@ -417,7 +396,7 @@ export default function App() {
                     }}
                 >
                     <CardHeader
-                        title={isXs ? "Account" : "Username or Email & Password"}
+                        title={isXs ? "Confirm" : "Are you sure?"}
                         slotProps={{
                             title: {
                                 sx: {
@@ -429,11 +408,11 @@ export default function App() {
                         }}
                     />
                     <CardContent>
-                        <Stack rowGap={5}>
-                            <TextField onChange={(e) => setUsername(e.target.value)} size="small" />
+                        <Stack rowGap={5} >
+                            <Typography component="h3">Are you sure to remove {username}?</Typography>
                             <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
-                                <Button variant="outlined" onClick={closeLoginModal}>Cancel</Button>
-                                <Button variant="contained" color="success" onClick={openChrome} sx={{ color: "#fff" }}>Open</Button>
+                                <Button variant="outlined" onClick={() => setConfirmModal(false)}>Cancel</Button>
+                                <Button variant="contained" color="error" onClick={() => closeChrome()} sx={{ color: "#fff" }}>Login</Button>
                             </Stack>
                         </Stack>
                     </CardContent>

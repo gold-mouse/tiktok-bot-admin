@@ -15,15 +15,6 @@ interface ISearchParams {
     username: string;
 }
 
-export const openChromeAPI = async (username: string) => {
-    try {
-        const response = await axios.get("/open-driver", { params: { username } })
-        return response.data
-    } catch (error: any) {
-        throw new Error(error?.response?.data?.message ?? "Something went wrong!")
-    }
-}
-
 export const closeChromeAPI = async (username: string) => {
     try {
         const response = await axios.get("/close-driver", { params: { username } })
@@ -32,6 +23,7 @@ export const closeChromeAPI = async (username: string) => {
         throw new Error(error?.response?.data?.message ?? "Something went wrong!")
     }
 }
+
 
 export const fetch_usersAPI = async () => {
     try {
@@ -60,18 +52,9 @@ export const loginAPI = async (data: IUserLogin) => {
     }
 }
 
-export const followAPI = async (data: IFollow_favorite) => {
+export const botActionAPI = async (data: IFollow_favorite) => {
     try {
-        const response = await axios.post("/follow-video", data)
-        return response.data
-    } catch (error: any) {
-        throw new Error(error?.response?.data?.message ?? "Something went wrong!")
-    }
-}
-
-export const favoriteAPI = async (data: IFollow_favorite) => {
-    try {
-        const response = await axios.post("/save-video", data)
+        const response = await axios.post("/total-action", data)
         return response.data
     } catch (error: any) {
         throw new Error(error?.response?.data?.message ?? "Something went wrong!")
