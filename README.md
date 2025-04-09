@@ -20,6 +20,11 @@ Verify installation with:
 git --version
 ```
 
+### Install yarn
+```sh
+npm install yarn -g
+```
+
 ## Getting Started
 
 ### 1. Clone the Repository
