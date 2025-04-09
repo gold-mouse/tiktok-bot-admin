@@ -13,6 +13,7 @@ interface IFollow_favorite {
 interface ISearchParams {
     keyword: string;
     username: string;
+    comment: string;
 }
 
 export const closeChromeAPI = async (username: string) => {

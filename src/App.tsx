@@ -39,6 +39,7 @@ export default function App() {
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [query, setQuery] = useState<string>("")
+    const [commentText, setCommentText] = useState<string>("")
 
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [confirmModal, setConfirmModal] = useState(false)
@@ -103,7 +104,7 @@ export default function App() {
         }
         setLoading(true)
         try {
-            let res = await searchAPI({ keyword: query, username })
+            let res = await searchAPI({ keyword: query, username, comment: commentText })
             if (res.status === true) {
                 setVideosList(res.data)
                 toast.success("Success!")
@@ -267,10 +268,11 @@ export default function App() {
                     />
                     <CardContent>
                         <Grid container spacing={5}>
-                            <Grid size={6}>
+                            <Grid size={8}>
                                 <Stack flexDirection="row" alignItems="center" gap={2}>
                                     <TextField size="small" placeholder="keywords..." fullWidth onChange={(e) => setQuery(e.target.value)} />
-                                    <Button color="success" sx={{ color: "white" }} variant="contained" onClick={searchVideos} >Search</Button>
+                                    <TextField size="small" placeholder="comment..." fullWidth onChange={(e) => setCommentText(e.target.value)} />
+                                    <Button color="success" variant="contained" onClick={searchVideos} >Search</Button>
                                 </Stack>
                             </Grid>
                         </Grid>
