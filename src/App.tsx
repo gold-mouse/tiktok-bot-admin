@@ -88,6 +88,8 @@ export default function App() {
             if (res.status) {
                 toast.success("Success!")
                 fetch_usernames()
+                setUsername("")
+                setConfirmModal(false)
             }
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
@@ -412,7 +414,7 @@ export default function App() {
                             <Typography component="h3">Are you sure to remove {username}?</Typography>
                             <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
                                 <Button variant="outlined" onClick={() => setConfirmModal(false)}>Cancel</Button>
-                                <Button variant="contained" color="error" onClick={() => closeChrome()} sx={{ color: "#fff" }}>Login</Button>
+                                <Button variant="contained" color="error" onClick={() => closeChrome()} sx={{ color: "#fff" }}>Close Chrome</Button>
                             </Stack>
                         </Stack>
                     </CardContent>
