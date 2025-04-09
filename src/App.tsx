@@ -117,6 +117,7 @@ export default function App() {
 
     const handleClick = (username: string) => {
         setUsername(username)
+        setVideosList([])
         setIsOpen(true)
     }
 
@@ -270,9 +271,28 @@ export default function App() {
                         <Grid container spacing={5}>
                             <Grid size={8}>
                                 <Stack flexDirection="row" alignItems="center" gap={2}>
-                                    <TextField size="small" placeholder="keywords..." fullWidth onChange={(e) => setQuery(e.target.value)} />
-                                    <TextField size="small" placeholder="comment..." fullWidth onChange={(e) => setCommentText(e.target.value)} />
-                                    <Button color="success" variant="contained" onClick={searchVideos} >Search</Button>
+                                    <TextField
+                                        onKeyUp={(e) => e.key === "Enter" && searchVideos()}
+                                        size="small"
+                                        placeholder="keywords..."
+                                        fullWidth
+                                        onChange={(e) => setQuery(e.target.value)}
+                                    />
+                                    <TextField
+                                        onKeyUp={(e) => e.key === "Enter" && searchVideos()}
+                                        size="small"
+                                        placeholder="comment..."
+                                        fullWidth
+                                        onChange={(e) => setCommentText(e.target.value)}
+                                    />
+                                    <Button
+                                        color="success"
+                                        variant="contained"
+                                        sx={{ color: "#fff", px: 3 }}
+                                        onClick={searchVideos}
+                                    >
+                                        Search
+                                    </Button>
                                 </Stack>
                             </Grid>
                         </Grid>
