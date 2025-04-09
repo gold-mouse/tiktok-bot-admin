@@ -66,7 +66,6 @@ export default function App() {
         try {
             setLoading(true)
             const res = await loginAPI({ username: username_, password })
-            setLoading(false)
             if (res.status) {
                 toast.success("Success!")
                 fetch_usernames()
@@ -75,6 +74,7 @@ export default function App() {
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
         }
+        setLoading(false)
     }
 
     const closeChrome = async () => {
@@ -84,7 +84,6 @@ export default function App() {
         try {
             setLoading(true)
             const res = await closeChromeAPI(username)
-            setLoading(false)
             if (res.status) {
                 toast.success("Success!")
                 fetch_usernames()
@@ -94,6 +93,7 @@ export default function App() {
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
         }
+        setLoading(false)
     }
 
     const botAction = async (link: string) => {
