@@ -67,11 +67,13 @@ export default function App() {
         }
         try {
             setLoading(true)
-            const res = await loginAPI({ username: username_, password })
+            const res = await loginAPI({ username: username_.trim(), password })
             if (res.status) {
                 toast.success("Success!")
                 fetch_usernames()
                 closeLoginModal()
+            } else {
+                toast.error(res.message)
             }
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
@@ -91,6 +93,8 @@ export default function App() {
                 fetch_usernames()
                 setUsername("")
                 setConfirmModal(false)
+            } else {
+                toast.error(res.message)
             }
         } catch (error: any) {
             toast.error(error?.message ?? "Something went wrong!")
@@ -185,13 +189,15 @@ export default function App() {
         },
     ]
 
+    console.log(videoList)
+    
     return (
         <>
             {
                 loading && <LoadingFallback />
             }
             <Card sx={{ height: "100vh" }}>
-                <CardHeader title="Tiktok Accounts Management" />
+                <CardHeader title="Tiktok Accounts Management" sx={{ cursor: "pointer" }} />
                 <CardContent>
                     <Stack
                         flexDirection={{ md: "row", sx: "column" }}
