@@ -42,7 +42,7 @@ cd tiktok-bot-admin
 ### 2. Install Dependencies
 Run the following command inside the project directory to install required dependencies:
 ```sh
-npm install
+yarn install
 ```
 
 ### 3. Start the Development Server
