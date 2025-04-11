@@ -48,12 +48,12 @@ yarn install
 ### 3. Start the Development Server
 To start the project in development mode, run:
 ```sh
-npm start
+yarn start
 ```
 This will launch the app in your default web browser at `http://localhost:3000/`.
 
 ## Environment Variables
 Create a `.env` file in the root directory and define them:
 ```sh
-REACT_APP_API_URL="http://192.168.133.173:5000/api"
+REACT_APP_API_URL=YOUR_BACKEND_URL
 ```
