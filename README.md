@@ -25,6 +25,11 @@ git --version
 npm install yarn -g
 ```
 
+### Python Backend
+```sh
+git clone https://github.com/gold-mouse/tiktok-python-bot.git
+```
+
 ## Getting Started
 
 ### 1. Clone the Repository
