@@ -287,7 +287,7 @@ export default function App() {
                                     <TextField
                                         onKeyUp={(e) => e.key === "Enter" && searchVideos()}
                                         size="small"
-                                        placeholder="comment..."
+                                        placeholder="separate with commas for multiple comments..."
                                         fullWidth
                                         onChange={(e) => setCommentText(e.target.value)}
                                     />

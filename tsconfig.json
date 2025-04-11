@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": true,
+        "module": "ESNext",
+        "target": "ES6",
+        "jsx": "react-jsx",
+        "allowJs": false, // Disallow JavaScript files
+        "checkJs": false, // Prevent TypeScript from checking JS files
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": ".",
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.js",
+        "**/*.jsx"
+    ]
+}
